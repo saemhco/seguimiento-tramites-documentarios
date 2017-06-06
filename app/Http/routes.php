@@ -39,3 +39,17 @@ Route::resource('oficina','OficinaController');
 
 Route::resource('admin','AdminController');
 Route::resource('eliminar','OficinaController@destroy');
+
+
+// Route::get('saem',function(){
+// 	$registro=App\Registro::where('oficinas_id','2')->where('created_at','like','2017%')->orderBy('n','desc')->get();
+// 	$anterior=0;
+// 	foreach ($registro as $r) {
+		
+// 		if ($anterior==$r->n) {
+// 			echo "El id=".$r->id.' El N°='.$r->n.'<br>';
+// 		}
+// 		$anterior=$r->n;
+// 	}
+// });
+

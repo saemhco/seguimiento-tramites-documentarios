@@ -64,7 +64,7 @@ class CardexController extends Controller
             case '0':
                 $cardex = DB::table('registros')->join('users', 'users.id', '=', 'registros.users_id')
                                                 ->where('users.oficinas_id',Auth::user()->oficinas_id)
-                                                ->where('registros.created_at', 'like',$anio)
+                                                ->where('registros.created_at', 'like',$anio)->orderBy('registros.n','asc')
                                                 ->select('registros.n as cardex')->get();
                 break;
             case '1':case '2':case '3':case '4':case '5':case '6':case '7':
@@ -75,10 +75,9 @@ class CardexController extends Controller
                                             ->get();
                 break;
             default: 
-                return Redirect::to('registro')->with('message','advertencia');  ;
+                return Redirect::to('registro')->with('message','advertencia');
                 break;
         }
-        
         return view('cardex.cardex',compact('cardex','tipo'));
     }
 
