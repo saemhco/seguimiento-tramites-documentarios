@@ -30,12 +30,13 @@
                                 @for ($i=0; $i < 500; $i++)
                                   <tr>
                                     @for ($j=0; $j < 10; $j++) 
-                                      <?php $sensor="false";  ?>
-                                      @foreach($cardex as $card)
-                                          @if ($card->cardex == $cont)
-                                            <?php $sensor="true"; ?>
-                                          @endif
-                                      @endforeach
+                                      <?php $sensor="false";  
+                                      foreach ($cardex as $card) {
+                                        if ($card->cardex == $cont) {
+                                          $sensor="true";
+                                        }
+                                      }
+                                      ?>
                                           @if ($sensor == "true")
                                             <td align="center" class="success" >
                                               <?php echo $cont; ?>
