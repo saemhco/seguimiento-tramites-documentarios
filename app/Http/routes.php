@@ -52,4 +52,26 @@ Route::resource('eliminar','OficinaController@destroy');
 // 		$anterior=$r->n;
 // 	}
 // });
-
+// Route::get('saul',function(){
+// 	$registros=App\Registro::get();
+// 	$descargos=App\Descargo::get();
+// 	foreach($registros as $registro){
+//         $sensor="false"; $tablallena="true";
+//         foreach($descargos as $descargo){
+//             if($registro->id == $descargo->registros_id){
+//                 $sensor="true";
+//                 break;
+//             } 
+//         } 
+//         if($sensor == 'true'){
+//             $r=App\Registro::find($registro->id);
+//             $r->desc='1';
+//             $r->save();
+//         }else{
+//         	$r=App\Registro::find($registro->id);
+//             $r->desc='0';
+//             $r->save();
+//         }
+//     } 
+//         return "Éxito";
+// });

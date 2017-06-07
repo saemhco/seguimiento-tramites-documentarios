@@ -1,7 +1,7 @@
 @extends('master.principal')
 @section('title','Registros')
 @section('estilos')
-  {!!Html::style('css/estilos-saem/registros.css')!!}
+	{!!Html::style('css/estilos-saem/registros.css')!!}
 @endsection
 @section('contenido')
 <?php  // Establecer la zona horaria predeterminada a usar. Disponible desde PHP 5.1
@@ -11,9 +11,12 @@
 
  ?>
               <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
+              <div align="center">
+              <img src="{{ URL::to('images/pronto.png')}}" width="70%">
+              </div>
+                <!--div class="x_panel">
                   <div class="x_title">
-                    <h2><b>Facultad: </b>{{$titulo}} <a href="{!! route('registro.create')!!}" title="Nuevo"><i id="ico-plus" class="fa fa-plus-circle"></i></a></h2>
+                    <h2>{{$titulo}}<a href="{!! route('registro.create')!!}" title="Nuevo"><i id="ico-plus" class="fa fa-plus-circle"></i></a></h2>
                     
                     <div class="clearfix"></div>
                   </div>
@@ -22,6 +25,7 @@
                       <thead>
                         <tr>
                           <th>Fecha</th>
+                          <th>Facultad</th>
                           <th>Oficina</th>
                           <th>Documento</th>
                           <th>Emisor</th>
@@ -32,41 +36,48 @@
 
 
                       <tbody>
-                      <?php
-                      $tablallena="false";
-                      foreach($registros as $registro) {
-                          $sensor="false"; $tablallena="true";
-                          if($registro->desc=='0') {
-                            $claseFilas='danger'; $documento=""; $receptor="";
-                          }
-                          else {$claseFilas=''; } ?>
+                      <?php $tablallena="false";  ?>
+                      @foreach($registros as $registro)
+                          <?php $sensor="false"; $tablallena="true"; ?>
+                          @foreach($descargos as $descargo)
+                            @if($registro->id == $descargo->reg)
+                              <?php $sensor="true"; ?>
+                            @endif
+                          @endforeach
+                            @if($sensor != 'true')
+                              <?php $claseFilas='danger'; ?>
+                            @else
+                              <?php $claseFilas=''; ?>
+                            @endif
                             <tr 
                             data-toggle="modal" data-target=".bs-example-modal-lg" 
                            class="{{$claseFilas}}" 
                             onclick="cargarModal('{{$registro->id}}')">
                               <td>{!! $registro->created_at !!}</td>
+                              <td>{!! $registro->facultad !!}</td>
                               <td>{!! $registro->oficina !!}</td>
                               <td>{!! $registro->documento !!}</td>
                               <td>{!! $registro->emisor !!}</td>
                               <td>{!! $registro->asunto !!}</td>
                               <td>{!! $registro->adjunto !!}</td>
                             </tr>
-                      <?php } ?>
+                      @endforeach()
                       </tbody>
                     </table>
                   </div>
                 </div>
               </div>
               <!-- Modal-->
-                  <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+                  <!--div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                       <div class="modal-content">
 
                         <div class="modal-header">
                           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
                           </button>
-                          <h2 class="modal-title" id="myModalLabel">Cargando... </h2>
+                          <h2 class="modal-title" id="myModalLabel" alt="Cargando...">Cargando... </h2>
                         </div>
+
                         <div class="modal-body">
                         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token"> 
                           <div align="center" STYLE="position:absolute; top:2em; left:30%;     visibility:visible z-index:1">
@@ -95,7 +106,6 @@
                           <br>
                           <div id="descargo">
                             <ul>
-                            
                               <li>
                                 <label id="fecha_d1" class="descargo-label"></label>
                               </li>
@@ -113,12 +123,12 @@
                           </div>
                         </div>
                         <div class="modal-footer">
-                         
+                          
                           <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                           </div>
 
                       </div>
-                    </div>
+                    </div-->
                   </div>
 
 
@@ -132,8 +142,10 @@ function cargarModal(ids){
     var id=ids;
     var data={'id':id};  
 
+    //Botones del modal
     
 
+ 
 
     //Variables Modal  
 
@@ -153,9 +165,9 @@ function cargarModal(ids){
         $('#documento').text(result.documento);
         $('#emisor').text(result.emisor);
         $('#asunto').text(result.asunto);
-        $('#adjunto').text(result.adjunto); 
-        $('#carga').hide();
-        
+        $('#adjunto').text(result.adjunto);
+        $("#carga").hide();
+
           //tipo documento
           if (result.fecha_a != result.fecha_d1) {
           var nombre_tipo_doc;
@@ -165,7 +177,6 @@ function cargarModal(ids){
             case '3': nombre_tipo_doc='Oficio Multiple'; break;
             case '4': nombre_tipo_doc='Resolución de Decanato'; break;
             case '6': nombre_tipo_doc='Resolución de Consejo de Facultad'; break;
-            case '7': nombre_tipo_doc="Proveido comisión de currícula"; break;
             case '5': nombre_tipo_doc='Otro'; break;
           }
         $('#fecha_d1').text(' Fecha de Descargo: '+ result.fecha_d1);
@@ -176,16 +187,13 @@ function cargarModal(ids){
         
       }
       else{    
-        
         $('#fecha_d1').text(' ');
         $('#fecha_d2').text(' ');
         $('#tipo_doc').text(' ');
         $('#receptor').text(' ');
         
-
       }
-
-        // console.log(result);                  
+         console.log(result);                  
       } 
     });
   }

@@ -23,7 +23,7 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">N° de Registro
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                           {!!Form::text('n', $nums, ['required', 'class'=> 'form-control col-md-7 col-xs-12', 'placeholder'=>'Ingrese N° de Registro'])!!}
+                           {!!Form::text('n', $nums, ['required', 'class'=> 'form-control col-md-7 col-xs-12', 'onkeypress'=>'return valida(event)', 'placeholder'=>'Ingrese N° de Registro'])!!}
                            <a href="{{route('cardex.show','0')}}" target="_blank">Verificar registro</a>
                            <br><br><input type="checkbox" id="check" />
                                     <label style="color: blue">*Sin Registro</label>
@@ -98,6 +98,19 @@
           $('#asunto').val('');
           $('#adjunto').val('');
         }
+        function valida(e){
+          tecla = (document.all) ? e.keyCode : e.which;
+
+          //Tecla de retroceso para borrar, siempre la permite
+          if (tecla==8){
+              return true;
+          }
+              
+          // Patron de entrada, en este caso solo acepta numeros
+          patron =/[0-9]/;
+          tecla_final = String.fromCharCode(tecla);
+          return patron.test(tecla_final);
+      }
       });
 </script>
 @endsection

@@ -42,7 +42,7 @@ class RegistroController extends Controller
            return Redirect::to('admin');
         }
         else{
-            $registros=\App\Oficina::Find(Auth::user()->oficinas_id)->registros;                
+            $registros=\App\Oficina::Find(Auth::user()->oficinas_id)->registros;         
             $descargos = DB::table('registros')
                 ->join('descargos', 'registros.id', '=', 'descargos.registros_id')
                 ->where('registros.oficinas_id', Auth::user()->oficinas_id)
@@ -54,7 +54,16 @@ class RegistroController extends Controller
             $clase="table table-bordered dt-responsive nowrap";
             $oficina = DB::table('oficinas')->where('id', Auth::user()->oficinas_id)->select('nombre')->first(); 
             $titulo=$oficina->nombre;
-            return view('registro.area',compact('registros','descargos', 'id', 'clase', 'titulo'));
+            $td=array('' =>'' ,
+                '1' => 'Proveido N° ',
+                '2' => 'Oficio N° ',
+                '3' => 'Oficio Múltiple N° ',
+                '4' => 'Resolucion de Decanato N° ',
+                '6' => 'Resolucion de Consejo de Facultad N° ',
+                '7' => 'Proveido comisión de currícula N° ',
+                '5' => 'Otros/Sin Desc. N° '
+                         );
+            return view('registro.area',compact('registros','descargos', 'id', 'clase', 'titulo','td'));
 
         }
     }
@@ -94,7 +103,31 @@ class RegistroController extends Controller
      */
     public function store(Request $request)
     {
-        \App\Registro::create($request->all());
+        //\App\Registro::create($request->all());
+        $anio = Carbon::now()->format('Y').'%';
+        $registro= new \App\Registro;
+        //Obtenemos el ultimo registro del año en nuestra oficina
+        $mreg=\App\Registro::where('oficinas_id',Auth::user()->oficinas_id)->where('created_at','like',$anio)->orderBy('n','desc')->first();
+        //Si el la primera consulta del año no habra valores
+        if ($mreg) {
+            $n=$request->get('n');
+            if ($mreg->n >= $n) {
+                $n=$mreg->n+1;
+            }
+        }else{
+            $n=1;
+        }
+        //LLenamos los datos
+        $registro->n=$n;
+        $registro->documento=$request->get('documento');
+        $registro->emisor=$request->get('emisor');
+        $registro->asunto=$request->get('asunto');
+        $registro->adjunto=$request->get('adjunto');
+        $registro->oficinas_id=Auth::user()->oficinas_id;
+        $registro->users_id=Auth::user()->id;
+        $registro->users_ed=Auth::user()->id;
+        $registro->desc='0';
+        $registro->save();
         return Redirect::to('registro')->with('message','nuevo-registro');
     }
 
@@ -110,7 +143,7 @@ class RegistroController extends Controller
                     $registros = DB::table('registros')
                         ->join('oficinas', 'oficinas.id', '=', 'registros.oficinas_id')
                         ->where('oficinas.facultads_id', Auth::user()->oficina->facultad->id)
-                        ->select('registros.id','registros.n', 'oficinas.nombre as oficina','registros.documento','registros.emisor','registros.asunto','registros.adjunto','registros.users_id','registros.users_ed','registros.created_at', 'registros.updated_at')
+                        ->select('registros.id','registros.n', 'oficinas.nombre as oficina','registros.documento','registros.desc','registros.emisor','registros.asunto','registros.adjunto','registros.users_id','registros.users_ed','registros.created_at', 'registros.updated_at')
                         ->get();
         $descargos = DB::table('registros')
             ->join('descargos', 'registros.id', '=', 'descargos.registros_id')
@@ -130,7 +163,7 @@ class RegistroController extends Controller
         $registros = DB::table('registros')
                         ->join('oficinas', 'oficinas.id', '=', 'registros.oficinas_id')
                         ->join('facultads', 'facultads.id', '=', 'oficinas.facultads_id')
-                        ->select('registros.id','registros.n','facultads.nombre as facultad' ,'oficinas.nombre as oficina','registros.documento','registros.emisor','registros.asunto','registros.adjunto','registros.users_id','registros.users_ed','registros.created_at', 'registros.updated_at')
+                        ->select('registros.id','registros.desc','registros.n','facultads.nombre as facultad' ,'oficinas.nombre as oficina','registros.documento','registros.emisor','registros.asunto','registros.adjunto','registros.users_id','registros.users_ed','registros.created_at', 'registros.updated_at')
                             ->get();
         $descargos = DB::table('registros')
             ->join('descargos', 'registros.id', '=', 'descargos.registros_id')

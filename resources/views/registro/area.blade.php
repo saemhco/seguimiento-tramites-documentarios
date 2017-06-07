@@ -90,33 +90,16 @@
 
 
                       <tbody>
-                      <?php $tablallena="false";  ?>
-                      @foreach($registros as $registro)
-                          <?php $sensor="false"; $tablallena="true";
-                          foreach($descargos as $descargo){
+                      <?php $tablallena="false";
+                      foreach($registros as $registro) {
+                          $sensor="false"; $tablallena="true";
                             
-                            if($registro->id == $descargo->reg){
-                               $sensor="true"; 
-                                switch ($descargo->tipo_doc) {
-                                  case 1: $td="Proveido N° "; break;
-                                  case 2: $td="Oficio N° "; break;
-                                  case 3: $td="Oficio Múltiple N° "; break;
-                                  case 4: $td="Resolucion de Decanato N° "; break;
-                                  case 6: $td="Resolucion de Consejo de Facultad N° "; break;
-                                  case 7: $td="Proveido comisión de currícula N° "; break;
-                                  case 5: $td="Otros N°"; break;
-                                  default:break;
-                                }
-                                $documento=$td.$descargo->cardex;
-                                $receptor=$descargo->receptor;
-                              
-                            } 
-                          }  
-                          if($sensor != 'true'){
+                          if($registro->desc == '0') {
                             $claseFilas='danger'; $documento=""; $receptor="";
                               ///$descargo=App\Descargo::find(3)->receptor;
                           }
-                          else $claseFilas=''; ?>
+                          else {$claseFilas=''; 
+                          $documento=$td[1];}//.$descargo->cardex;} ?>
                             <tr 
                             data-toggle="modal" data-target=".bs-example-modal-lg" 
                            class="{{$claseFilas}}" 
@@ -127,10 +110,16 @@
                               <td>{!! $registro->emisor !!}</td>
                               <td>{!! $registro->asunto !!}</td>
                               <td>{!! $registro->adjunto !!}</td>
-                              <td>{!! $documento !!}</td>
-                              <td>{!! $receptor !!}</td>
+                              @if($registro->desc=='1')
+
+                              <td>{!! $td[$registro->descargo->tipo_doc].$registro->descargo->cardex!!}</td>
+                              <td>{!! $registro->descargo->receptor!!}</td>
+                              @else
+                              <td></td><td></td>
+                              @endif
+                              
                             </tr>
-                      @endforeach()
+                      <?php } ?>
                       </tbody>
                     </table>
                     </div>
@@ -176,7 +165,7 @@
                           <div id="descargo">
                             <ul>
                             @if($tablallena=="true")
-                            <a href="" id="crear_descargo" id="enlace"></a>
+                            <a href="" id="crear_descargo"></a>
                             @endif
                               <li>
                                 <label id="fecha_d1" class="descargo-label"></label>
@@ -267,7 +256,7 @@ function cargarModal(ids){
             case '4': nombre_tipo_doc='Resolución de Decanato'; break;
             case '6': nombre_tipo_doc='Resolución de Consejo de Facultad'; break;
             case '7': nombre_tipo_doc="Proveido comisión de currícula"; break;
-            case '5': nombre_tipo_doc='Otro'; break;
+            case '5': nombre_tipo_doc='Otro/Sin Desc.'; break;
           }
         $('#fecha_d1').text(' Fecha de Descargo: '+ result.fecha_d1);
         $('#fecha_d2').text(' Última Actualización: '+ result.fecha_d2);

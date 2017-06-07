@@ -9,7 +9,7 @@ class Registro extends Model
     protected $table = 'registros';
     protected $primarykey = 'id';
     protected $fillable = [
-    	'n', 'documento', 'emisor', 'asunto', 'adjunto', 'oficinas_id', 'users_id', 'users_ed'
+    	'n', 'documento', 'emisor', 'asunto', 'adjunto', 'oficinas_id', 'users_id', 'users_ed','desc'
     ];
     public function descargo(){
     	return $this->hasOne('App\Descargo','registros_id');

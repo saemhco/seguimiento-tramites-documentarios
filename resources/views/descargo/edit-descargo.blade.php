@@ -17,7 +17,7 @@
                           <option value='1'>Proveido</option>
                           <option value='2'>Oficio</option>
                           <option value='3'>Oficio Multiple</option>
-                          <option value='4'>Resollución de Decanato</option>
+                          <option value='4'>Resolución de Decanato</option>
                           <option value="6">Resolución de Consejo de Facultad</option> 
                           <option value='7'>Proveido comisión de currícula</option>
                           <option value='5'>Sin Descargo</option>
@@ -70,12 +70,10 @@ opcion_defecto();
 
 function cambiar(){
     //var route="http://localhost/enfermeria/public/getcardex";
-    var route="getcardex";
+    var route="/ncd";
     var id=$('#tipo_doc').val();
-    
       var data={
       'id':id
-
     };    
 
     var token=$("#token").val();

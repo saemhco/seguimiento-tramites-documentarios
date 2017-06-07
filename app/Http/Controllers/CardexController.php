@@ -85,8 +85,6 @@ class CardexController extends Controller
     {
         //fecha actual, si lo puedes hacer con CARBON corriges el where (created_at,like, fechaactual)
         $anio = Carbon::now()->format('Y').'%';
-       
-      
         $id=$request->get('id');
           $datos=\App\Descargo::join('users', 'users.id', '=', 'descargos.users_id')
                             ->where('descargos.tipo_doc',$id)

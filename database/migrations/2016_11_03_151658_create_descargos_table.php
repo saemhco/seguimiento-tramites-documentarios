@@ -20,8 +20,8 @@ class CreateDescargosTable extends Migration
             $table->integer('registros_id')->unsigned();
             $table->integer('users_id')->unsigned();
             $table->integer('users_ed')->unsigned();
-
-            $table->foreign('registros_id')->references('id')->on('registros');
+            $table->foreign('registros_id')->references('id')->on('registros')
+                    ->onDelete('cascade');
             $table->foreign('users_id')->references('id')->on('users');
             $table->foreign('users_ed')->references('id')->on('users');
 

@@ -16,7 +16,7 @@ $registro=$r->id;
                       <span class="section">Descargo: <i>{{$r->documento}}</i></span>
 
                       <div class="item form-group">
-                        {!!Form::label('email', 'Tipo de Documento', ['class'=>'control-label col-md-3 col-sm-3 col-xs-12'])!!}
+                        {!!Form::label('nombre_lo_q_sea', 'Tipo de Documento', ['class'=>'control-label col-md-3 col-sm-3 col-xs-12'])!!}
                         <div class="col-md-6 col-sm-6 col-xs-12">
                         <select onchange="cambiar();" id='tipo_doc' name='tipo_doc' class='form-control unidad'>
                           <option value='1'>Proveido</option>
@@ -28,7 +28,6 @@ $registro=$r->id;
                           <option value='5'>Sin Descargo</option>
                         </select>
                         <a href="../cardex/1" id="verificar" TARGET="_new">Verificar N°</a>
-
                         </div>
                       </div>
 		      <div id="divcardex">
@@ -48,7 +47,7 @@ $registro=$r->id;
                         {!!Form::hidden('registros_id', $registro)!!}
                         </div>
                       </div>
-                      </div>
+          </div>
                       {!!Form::hidden('users_id', Auth::user()->id)!!}
                       {!!Form::hidden('users_ed', Auth::user()->id)!!}
                       <div class="ln_solid"></div>

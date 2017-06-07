@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Redirect;
 use DB;
+use Carbon\Carbon;
 class DescargoController extends Controller
 {
     public function __construct(){
@@ -50,7 +51,32 @@ class DescargoController extends Controller
             return Redirect::to('registro')->with('message','error-Descargo');
          }
          else{
-            \App\Descargo::create($request->all());
+            //En caso no halla problemas, llenamos todo.
+            //Primero identificamos que tipo es
+            $anio = Carbon::now()->format('Y').'%';
+            $tipodescargo=$request->get('tipo_doc');
+            $ultimo_descargo=\App\Descargo::join('registros','registros.id','=','descargos.registros_id')->where('registros.oficinas_id',Auth::user()->oficinas_id)->where('descargos.tipo_doc',$tipodescargo)->where('descargos.created_at','like',$anio)->orderBy('descargos.cardex','desc')
+            ->first();
+            //Si es el primero no retorna ningun valor, le damos por defecto 1
+            if ($ultimo_descargo) {
+                $n=$request->get('cardex');
+                if ($ultimo_descargo->cardex >= $n) {
+                    $n=$ultimo_descargo->cardex+1;
+                }
+            }else{
+                $n=1;
+            }
+            //Llenamos los datos
+            $descargo=new \App\Descargo;
+            $descargo->tipo_doc=$request->get('tipo_doc');
+            $descargo->cardex=$n;
+            $descargo->receptor=$request->get('receptor');
+            $descargo->registros_id=$registro;
+            $descargo->users_id=Auth::user()->id;
+            $descargo->users_ed=Auth::user()->id;
+            $descargo->save();
+            //Editamos el registro
+            $r=\App\Registro::find($registro); $r->desc='1'; $r->save();
             return Redirect::to('registro')->with('message','nuevo-Descargo');
          }
         
